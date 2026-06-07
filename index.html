@@ -132,6 +132,7 @@
             border-radius: 20px;
             padding: 28px 32px;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             gap: 20px;
@@ -169,6 +170,11 @@
         }
 
         /* --- HIGH-END SCROLL EDITORIAL GALLERIES --- */
+        .gallery-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
         .gallery-wrapper h2 {
             font-weight: 200;
             font-size: 13px;
@@ -188,7 +194,8 @@
             margin-right: -50vw;
             overflow-x: auto;
             padding: 20px 0 40px 0;
-            scroll-snap-type: x proximity;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
         }
 
         .horizontal-window::-webkit-scrollbar {
@@ -202,6 +209,45 @@
             width: max-content;
         }
 
+        /* --- TRACK CONTROLLER NAVIGATION BUTTONS --- */
+        .track-nav-btn {
+            position: absolute;
+            top: calc(50% + 15px);
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(13, 19, 33, 0.7);
+            border: 1px solid rgba(253, 230, 138, 0.15);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            color: #94A3B8;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 99;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            user-select: none;
+        }
+
+        .track-nav-btn:hover {
+            color: #FDE68A;
+            border-color: rgba(253, 230, 138, 0.4);
+            background: rgba(13, 19, 33, 0.9);
+            transform: translateY(-50%) scale(1.08);
+        }
+
+        .track-nav-btn.prev { left: -60px; }
+        .track-nav-btn.next { right: -60px; }
+
+        @media (max-width: 900px) {
+            .track-nav-btn.prev { left: 10px; }
+            .track-nav-btn.next { right: 10px; }
+        }
+
         /* --- HOVER INTERACTIVE CARDS WITH DYNAMIC TOOLTIPS --- */
         .asset-card {
             background: linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0.005) 100%);
@@ -212,6 +258,7 @@
             transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
             scroll-snap-align: center;
             position: relative;
+            cursor: pointer;
         }
 
         .asset-card.standard-photo { width: 230px; }
@@ -305,11 +352,49 @@
             gap: 50px;
             align-items: center;
             transform: scale(0.95) translateY(20px);
-            transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
         }
 
         .modal-overlay.active .modal-wrapper-container {
             transform: scale(1) translateY(0);
+        }
+
+        /* OVERLAY NAV BUTTON SYSTEM FOR THE MODAL VIEWER */
+        .modal-nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            background: rgba(13, 19, 33, 0.8);
+            border: 1px solid rgba(253, 230, 138, 0.2);
+            color: #94A3B8;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10002;
+            transition: all 0.3s;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            user-select: none;
+        }
+
+        .modal-nav-btn:hover {
+            color: #FDE68A;
+            border-color: rgba(253, 230, 138, 0.5);
+            background: rgba(13, 19, 33, 0.95);
+            transform: translateY(-50%) scale(1.06);
+        }
+
+        .modal-nav-btn.prev-item { left: -80px; }
+        .modal-nav-btn.next-item { right: -80px; }
+
+        @media (max-width: 1140px) {
+            .modal-nav-btn.prev-item { left: -20px; }
+            .modal-nav-btn.next-item { right: -20px; }
         }
 
         .modal-media-viewport {
@@ -330,6 +415,7 @@
             object-fit: contain;
             border-radius: 16px;
             box-shadow: 0 30px 70px rgba(0,0,0,0.5);
+            transition: opacity 0.3s ease-in-out;
         }
 
         .modal-text-panel {
@@ -353,6 +439,7 @@
             line-height: 1.8;
             color: #E2E8F0;
             font-style: italic;
+            transition: opacity 0.3s ease-in-out;
         }
 
         /* Close Button Overlay */
@@ -368,6 +455,7 @@
             cursor: pointer;
             transition: color 0.3s;
             line-height: 1;
+            z-index: 10003;
         }
 
         .modal-close-trigger:hover {
@@ -381,31 +469,45 @@
                 gap: 30px;
                 max-height: 90vh;
                 overflow-y: auto;
+                padding-top: 40px;
             }
             .modal-media-viewport img {
                 max-height: 40vh;
             }
             .modal-close-trigger {
-                top: 20px;
+                top: 10px;
                 right: 20px;
+            }
+            .modal-nav-btn {
+                top: 40%;
             }
         }
 
         /* --- THE BOTTOM PERSISTENT BRANDING --- */
         .footer-branding-layer {
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 25px;
+            gap: 15px;
             color: #334155;
             font-size: 11px;
             letter-spacing: 5px;
             text-transform: uppercase;
             padding-top: 40px;
+            text-align: center;
+        }
+
+        .footer-branding-layer h1 {
+            font-size: 14px;
+            font-weight: 300;
+            color: #64748B;
+            letter-spacing: 2px;
+            margin-top: 10px;
         }
 
         .vector-divider {
-            width: 80px;
+            width: 280px;
             height: 1px;
             background: linear-gradient(90deg, transparent, #1E293B, transparent);
         }
@@ -443,14 +545,15 @@
                 <div class="monument-panel">
                     <span class="emblem">🕊️</span>
                     <p>Holding a safe space in our hearts for your Dad. His love is forever woven into your life, and I am always right here by your side.</p>
-                    <p>The story you told  me the other day about your Dad really touched my heart and shaped me like right now pia mimi i want to be as respectful as he was.</p>
+                    <p>The story you told me the other day about your Dad really touched my heart and shaped me like right now pia mimi i want to be as respectful as he was.</p>
                 </div>
             </div>
         </div>
 
         <div class="gallery-wrapper reveal-element">
             <h2>Our Core Memories</h2>
-            <div class="horizontal-window">
+            <button class="track-nav-btn prev" data-track="track-1">←</button>
+            <div class="horizontal-window" id="track-1">
                 <div class="deck-track">
                     <div class="asset-card standard-photo" data-note="Joy, look at the unshakeable peace in this moment. The world can get completely chaotic, but the light you carry when we match our steps and face it together can never be put out. Take a breath. You are safe.">
                         <div class="view-window"><img src="images/20260405_154712.jpg" alt="Memory"></div>
@@ -467,7 +570,6 @@
                     <div class="asset-card standard-photo" data-note="Hapa sasa tumeiva as fuck😝😝😝🕺🥳😂😂.Smile iliingiana vipoa...">
                         <div class="view-window"><img src="images/20260405_154816.jpg" alt="Memory"></div>
                     </div>
-
                     <div class="asset-card standard-photo" data-note="Joy, never forget how effortlessly stunning and incredibly beautiful you are. Your smile and beauty are like mapanga shaa shaa shaa everywhere you go...Keep on shaa shaa ing sawa mamaaa😝🥳☺️💝🫶.">
                         <div class="view-window"><img src="images/IMG-20250801-WA0005.jpg" alt="Beautiful Joy"></div>
                     </div>
@@ -476,11 +578,13 @@
                     </div>
                 </div>
             </div>
+            <button class="track-nav-btn next" data-track="track-1">→</button>
         </div>
 
         <div class="gallery-wrapper reveal-element">
             <h2>Twin Reminders</h2>
-            <div class="horizontal-window">
+            <button class="track-nav-btn prev" data-track="track-2">←</button>
+            <div class="horizontal-window" id="track-2">
                 <div class="deck-track">
                     <div class="asset-card screenshot-photo" data-note="Read those words carefully whenever the room gets quiet. Loyalty isn't a temporary assignment for us; it has zero expiration date. I am locked in for life, no matter how tough things get.">
                         <div class="view-window"><img src="images/Screenshot 2026-06-06 201216.png" alt="Loyalty Quote"></div>
@@ -493,13 +597,13 @@
                     </div>
                 </div>
             </div>
+            <button class="track-nav-btn next" data-track="track-2">→</button>
         </div>
 
         <div class="footer-branding-layer reveal-element">
             <div class="vector-divider"></div>
-
-           Don't forget that i'm here for you mamaaa😝🥳☺️💝🫶...Sitachoka na wewe💯💯🥹🫂🫶✨
-           <h1>Goodmorning mamaaa love you soooooo much💝🫶✨🫰☺️😝</h1>
+            Don't forget that i'm here for you mamaaa😝🥳☺️💝🫶...Sitachoka na wewe💯💯🥹🫂🫶✨
+            <h1>Goodmorning mamaaa love you soooooo much💝🫶✨🫰☺️😝</h1>
             <div class="vector-divider"></div>
         </div>
 
@@ -508,6 +612,8 @@
     <div class="modal-overlay" id="sanctuary-modal">
         <button class="modal-close-trigger" id="modal-close-btn">&times;</button>
         <div class="modal-wrapper-container">
+            <button class="modal-nav-btn prev-item" id="modal-prev-btn">←</button>
+            
             <div class="modal-media-viewport">
                 <img src="" id="modal-target-img" alt="Enlarged Memory Canvas">
             </div>
@@ -515,6 +621,8 @@
                 <div class="dr-signature">A Note From Dr. Modi</div>
                 <div class="dr-note-body" id="modal-target-text"></div>
             </div>
+
+            <button class="modal-nav-btn next-item" id="modal-next-btn">→</button>
         </div>
     </div>
 
@@ -539,16 +647,33 @@
             observer.observe(element);
         });
 
-        /* --- ENGINE 2: PARALLAX ATMOSPHERE ENGINE --- */
+        /* --- ENGINE 2: TRACK CONTROLLER ARROWS (LAZY ROWS) --- */
+        const trackButtons = document.querySelectorAll('.track-nav-btn');
+        trackButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const trackId = btn.getAttribute('data-track');
+                const windowElement = document.getElementById(trackId);
+                const firstCard = windowElement.querySelector('.asset-card');
+                const stepScroll = firstCard.getBoundingClientRect().width + 30; // Card size + gap config
+
+                if (btn.classList.contains('next')) {
+                    windowElement.scrollLeft += stepScroll;
+                } else {
+                    windowElement.scrollLeft -= stepScroll;
+                }
+            });
+        });
+
+        /* --- ENGINE 3: PARALLAX ATMOSPHERE ENGINE --- */
         window.addEventListener('scroll', () => {
             const scrollValue = window.scrollY;
             document.getElementById('parallax-bg-1').style.transform = `translateY(${scrollValue * 0.25}px)`;
             document.getElementById('parallax-bg-2').style.transform = `translateY(${scrollValue * -0.15}px)`;
         });
 
-        /* --- ENGINE 3: SMOOTH TRACKING USER CURSOR TOOLTIP --- */
+        /* --- ENGINE 4: SMOOTH TRACKING USER CURSOR TOOLTIP --- */
         const tooltip = document.getElementById('app-tooltip');
-        const cards = document.querySelectorAll('.asset-card');
+        const cards = Array.from(document.querySelectorAll('.asset-card'));
 
         let mouseX = 0, mouseY = 0;
         let tooltipX = 0, tooltipY = 0;
@@ -575,23 +700,57 @@
             card.addEventListener('mouseleave', () => tooltip.classList.remove('visible'));
         });
 
-        /* --- ENGINE 4: THE CINEMATIC INTERACTIVE MODAL DIALOGUE --- */
+        /* --- ENGINE 5: CINEMATIC INTERACTIVE MODAL DIALOGUE WITH ACTIVE SEQUENCE TRACKING --- */
         const modal = document.getElementById('sanctuary-modal');
         const modalImg = document.getElementById('modal-target-img');
         const modalText = document.getElementById('modal-target-text');
         const closeBtn = document.getElementById('modal-close-btn');
+        const modalPrevBtn = document.getElementById('modal-prev-btn');
+        const modalNextBtn = document.getElementById('modal-next-btn');
 
-        cards.forEach(card => {
-            card.addEventListener('click', () => {
-                const imgSource = card.querySelector('img').src;
-                const textSource = card.getAttribute('data-note');
-                
+        let currentActiveCardIndex = 0;
+
+        function updateModalContent(index) {
+            if (index < 0 || index >= cards.length) return;
+            currentActiveCardIndex = index;
+
+            const card = cards[currentActiveCardIndex];
+            const imgSource = card.querySelector('img').src;
+            const textSource = card.getAttribute('data-note');
+
+            // Soft transition opacity dip
+            modalImg.style.opacity = 0;
+            modalText.style.opacity = 0;
+
+            setTimeout(() => {
                 modalImg.src = imgSource;
                 modalText.innerText = `"${textSource}"`;
-                
+                modalImg.style.opacity = 1;
+                modalText.style.opacity = 1;
+            }, 180);
+        }
+
+        cards.forEach((card, index) => {
+            card.addEventListener('click', () => {
+                updateModalContent(index);
                 tooltip.classList.remove('visible'); 
                 modal.classList.add('active');
             });
+        });
+
+        // Modal Button Action Receivers
+        modalPrevBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            let newIndex = currentActiveCardIndex - 1;
+            if (newIndex < 0) newIndex = cards.length - 1; // Infinite loop back to tail end
+            updateModalContent(newIndex);
+        });
+
+        modalNextBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            let newIndex = currentActiveCardIndex + 1;
+            if (newIndex >= cards.length) newIndex = 0; // Infinite loop wrap around to front head
+            updateModalContent(newIndex);
         });
 
         function closeModal() {
@@ -602,11 +761,16 @@
         modal.addEventListener('click', (e) => {
             if (e.target === modal) closeModal();
         });
+        
+        // Keyboard mapping array for ultimate desktop convenience
         window.addEventListener('keydown', (e) => {
+            if (!modal.classList.contains('active')) return;
             if (e.key === 'Escape') closeModal();
+            if (e.key === 'ArrowLeft') modalPrevBtn.click();
+            if (e.key === 'ArrowRight') modalNextBtn.click();
         });
 
-        /* --- ENGINE 5: CANVAS AMBIENT STAR DRIFTER --- */
+        /* --- ENGINE 6: CANVAS AMBIENT STAR DRIFTER --- */
         const canvas = document.getElementById('particle-canvas');
         const ctx = canvas.getContext('2d');
 
